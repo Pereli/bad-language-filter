@@ -1,0 +1,6 @@
+Django==4.1
+django-cors-headers==3.13.0
+dnspython==1.16.0
+gunicorn==20.1.0
+psycopg2==2.8.6
+spanlp==1.1.0

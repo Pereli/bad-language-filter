@@ -16,6 +16,7 @@ def index(request):
 
 
 @csrf_exempt
+@csrf_exempt
 def censor(request):
     # datos
     body = json.loads(request.body)
@@ -45,7 +46,7 @@ def censor(request):
                                             Country.VENEZUELA], 
                                         distance_metric=jaccard)
             censored = palabrota.censor(cleaned)
-            return JsonResponse({'text': censored})
+            return JsonResponse({'text': censored}, json_dumps_params={'ensure_ascii':False})
         except Exception as e:
             try:
                             # censura
@@ -55,12 +56,11 @@ def censor(request):
                                                     Country.ESPANA, 
                                                     Country.VENEZUELA])
                 censored = palabrota.censor(cleaned)
-                return JsonResponse({'text': censored})
+                return JsonResponse({'text': censored}, json_dumps_params={'ensure_ascii':False})
             except Exception as e2:
-                  return JsonResponse({'text': original})
+                return JsonResponse({'text': original}, json_dumps_params={'ensure_ascii':False})
     else:
-        # Devolver texto original
-          return JsonResponse({'text': original})
+        return JsonResponse({'text': original}, json_dumps_params={'ensure_ascii':False})
 
 
 

@@ -13,27 +13,24 @@ def index(request):
 
 
 
-
-
 @csrf_exempt
 @csrf_exempt
 def censor(request):
-    # datos
+
     body = json.loads(request.body)
     text = body['speak']
     original = text
 
-    # preprocesado de texto (mayuscculas, tildes, numeros)
+
     strategies = [RemoveAccents(), TextToLower(), NumbersToVowelsInLowerCase()]
     cleaned = Preprocessing().clean(data=original, clean_strategies=strategies)
     
-    # check de lenguaje ofensivo
+
     palabrota = Palabrota()
     offensive = palabrota.contains_palabrota(cleaned)
 
     if offensive == True:
         try:
-            # censura
             jaccard = JaccardIndex(
                                     threshold=0.7, 
                                     normalize=True, 
@@ -49,7 +46,6 @@ def censor(request):
             return JsonResponse({'text': censored}, json_dumps_params={'ensure_ascii':False})
         except Exception as e:
             try:
-                            # censura
                 palabrota = Palabrota(
                                         censor_char="*", 
                                         countries=[
@@ -63,36 +59,3 @@ def censor(request):
         return JsonResponse({'text': original}, json_dumps_params={'ensure_ascii':False})
 
 
-
-# def censor(request):
-#     body = json.loads(request.body)
-#     text = body['speak']
-
-
-#     original_text = text
-#     strategies = [RemoveAccents(), TextToLower(), NumbersToVowelsInLowerCase()]
-#     cleaned = Preprocessing().clean(data=original_text, clean_strategies=strategies)
-
-
-#     palabrota = Palabrota()
-#     offensive = palabrota.contains_palabrota(cleaned)
-
-
-#     if offensive == True:
-#         jaccard = JaccardIndex(
-#                                 threshold=0.7, 
-#                                 normalize=True, 
-#                                 n_gram=1, 
-#                                 clean_strategies=strategies)
-#         palabrota = Palabrota(
-#                                     censor_char="*", 
-#                                     countries=[
-#                                         Country.ESPANA, 
-#                                         Country.VENEZUELA], 
-#                                     distance_metric=jaccard)
-#         censored = palabrota.censor(cleaned)
-#         return JsonResponse({'text': censored})
-
-
-#     else:
-#         return JsonResponse({'text': original_text})

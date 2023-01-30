@@ -14,7 +14,6 @@ def index(request):
 
 
 @csrf_exempt
-@csrf_exempt
 def censor(request):
 
     body = json.loads(request.body)
